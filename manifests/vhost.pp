@@ -1188,12 +1188,14 @@
 #   apache::vhost { 'wsgi.example.com':
 #     port                        => 80,
 #     docroot                     => '/var/www/pythonapp',
-#     wsgi_daemon_process         => 'wsgi',
-#     wsgi_daemon_process_options =>
-#       { processes    => 2,
-#         threads      => 15,
+#     wsgi_daemon_process         => {
+#       'wsgi' => {
+#         processes    => '2',
+#         threads      => '15',
 #         display-name => '%{GROUP}',
 #       },
+#       'foo' => {},
+#     },
 #     wsgi_process_group          => 'wsgi',
 #     wsgi_script_aliases         => { '/' => '/var/www/demo.wsgi' },
 #     wsgi_chunked_request        => 'On',
@@ -1201,6 +1203,7 @@
 #   ```
 #
 # @param wsgi_daemon_process_options
+#   Depricated, move to wsgi_daemon_process
 #   Sets up a virtual host with [WSGI](https://github.com/GrahamDumpleton/mod_wsgi) alongside
 #   wsgi_daemon_process, wsgi_process_group, 
 #   wsgi_script_aliases and wsgi_pass_authorization.<br />
@@ -2678,7 +2681,7 @@ define apache::vhost (
     }
   }
 
-  if $wsgi_daemon_process_options {
+  if $_options {
     deprecation('apache::vhost::wsgi_daemon_process_options', 'This parameter is deprecated. Please add values inside Hash `wsgi_daemon_process`.')
   }
   if ($wsgi_application_group or $wsgi_daemon_process or ($wsgi_import_script and $wsgi_import_script_options) or $wsgi_process_group or ($wsgi_script_aliases and ! empty($wsgi_script_aliases)) or $wsgi_pass_authorization) and $ensure == 'present' {
