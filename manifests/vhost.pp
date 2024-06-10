@@ -2681,7 +2681,7 @@ define apache::vhost (
     }
   }
 
-  if $_options {
+  if $wsgi_daemon_process_options {
     deprecation('apache::vhost::wsgi_daemon_process_options', 'This parameter is deprecated. Please add values inside Hash `wsgi_daemon_process`.')
   }
   if ($wsgi_application_group or $wsgi_daemon_process or ($wsgi_import_script and $wsgi_import_script_options) or $wsgi_process_group or ($wsgi_script_aliases and ! empty($wsgi_script_aliases)) or $wsgi_pass_authorization) and $ensure == 'present' {
